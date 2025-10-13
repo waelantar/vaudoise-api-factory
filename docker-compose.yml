@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   app:
     image: vaudoise-api:1.0.0
@@ -9,7 +7,6 @@ services:
     ports:
       - "8080:8080"
     environment:
-      # Use variables for the database connection
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
@@ -22,7 +19,6 @@ services:
   db:
     image: postgres:16-alpine
     environment:
-      # Use variables for the database initialization
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}

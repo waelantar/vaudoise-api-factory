@@ -2,8 +2,7 @@
 FROM eclipse-temurin:25-jdk-alpine AS build
 WORKDIR /app
 
-# --- FIX IS HERE ---
-# Copy the POM and the Maven Wrapper files first.
+
 # This allows Docker to cache this layer if only your source code changes.
 COPY pom.xml mvnw ./
 COPY .mvn .mvn
