@@ -26,8 +26,6 @@ jobs:
       - name: Run Tests
         run: ./mvnw verify -Dspring.profiles.active=test
 
-      - name: Generate Coverage Report
-        run: ./mvnw jacoco:report
 
       - name: Upload Coverage to Codecov (optional)
         if: env.CODECOV_TOKEN != ''
