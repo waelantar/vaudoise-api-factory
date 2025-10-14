@@ -1,0 +1,12 @@
+#!/bin/sh
+
+mvn spotless:check
+
+if [ $? -ne 0 ]; then
+  echo "❌ Spotless check failed. Code formatting issues found."
+  echo "💡 Run 'mvn spotless:apply' to fix formatting automatically."
+  exit 1
+fi
+
+echo "✅ Spotless check passed."
+exit 0
