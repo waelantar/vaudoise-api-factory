@@ -55,8 +55,10 @@ jobs:
             ${{ runner.os }}-buildx-
 
       - name: Build Docker Image
-        run: |
-          docker build \
-            --cache-from=type=local,src=/tmp/.buildx-cache \
-            --cache-to=type=local,dest=/tmp/.buildx-cache-new \
-            -t vaudoise-api:pr-${{ github.event.number }} .
+        uses: docker/build-push-action@v6
+        with:
+            context: .
+            file: Dockerfile
+            push: false  # We’re not deploying
+            tags: vaudoise-api:ci
+            load: true
