@@ -13,21 +13,16 @@ jobs:
       db:
         image: postgres:16-alpine
         env:
-          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: test_db
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
         options: >-
-          --health-cmd pg_isready -U ${{ secrets.POSTGRES_USER }}
+          --health-cmd pg_isready -U test
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
         ports:
           - 5432:5432
-
-    env:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/${{ secrets.POSTGRES_DB }}
-      SPRING_DATASOURCE_USERNAME: ${{ secrets.POSTGRES_USER }}
-      SPRING_DATASOURCE_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
 
     steps:
       - name: Checkout code
@@ -41,6 +36,10 @@ jobs:
           cache: maven
 
       - name: Run Tests
+        env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/vaudoise
+          SPRING_DATASOURCE_USERNAME: ${{ secrets.POSTGRES_USER }}
+          SPRING_DATASOURCE_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
         run: ./mvnw verify
 
       - name: Generate Coverage Report
