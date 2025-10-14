@@ -37,3 +37,5 @@ build/
 
 ### env var ###
 .env
+### local settings ###
+application-dev.yml

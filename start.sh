@@ -6,7 +6,7 @@ set -e
 # Set environment variables for the test environment
 export POSTGRES_DB=vaudoise
 export POSTGRES_USER=postgres
-export POSTGRES_PASSWORD=postgres
+export POSTGRES_PASSWORD=blabla
 
 # Run docker-compose
 docker-compose up --build
