@@ -31,9 +31,11 @@ build/
 
 ### Logs ###
 *.log
-
+application-log.json
 ### VS Code ###
 .vscode/
 
 ### env var ###
 .env
+### local settings ###
+application-dev.yml
