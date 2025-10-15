@@ -124,11 +124,11 @@ public class Contract {
     return createdAt;
   }
 
-  protected void setCreatedAt(Instant createdAt) {
+  public void setCreatedAt(Instant createdAt) {
     this.createdAt = createdAt;
   }
 
-  protected void setUpdateDate(Instant updateDate) {
+  public void setUpdateDate(Instant updateDate) {
     this.updateDate = updateDate;
   }
 
