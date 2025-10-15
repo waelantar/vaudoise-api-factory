@@ -32,6 +32,7 @@ build/
 ### Logs ###
 *.log
 application-log.json
+application-log.json.*
 ### VS Code ###
 .vscode/
 
