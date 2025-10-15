@@ -9,11 +9,12 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidNumber {
-    String message() default "Invalid number format or value must be positive";
+  String message() default "Invalid number format or value must be positive";
 
-    // Optional attribute to set a maximum value
-    double max() default Double.MAX_VALUE;
+  // Optional attribute to set a maximum value
+  double max() default Double.MAX_VALUE;
 
-    Class<?>[] groups() default {};
-    Class<? extends Payload>[] payload() default {};
+  Class<?>[] groups() default {};
+
+  Class<? extends Payload>[] payload() default {};
 }

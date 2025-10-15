@@ -9,7 +9,9 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidIso8601Date {
-    String message() default "Invalid date format. Expected ISO-8601 format (e.g., YYYY-MM-DD)";
-    Class<?>[] groups() default {};
-    Class<? extends Payload>[] payload() default {};
+  String message() default "Invalid date format. Expected ISO-8601 format (e.g., YYYY-MM-DD)";
+
+  Class<?>[] groups() default {};
+
+  Class<? extends Payload>[] payload() default {};
 }
