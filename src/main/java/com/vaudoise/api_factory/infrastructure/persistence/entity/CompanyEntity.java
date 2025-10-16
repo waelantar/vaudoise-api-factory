@@ -8,7 +8,7 @@ import jakarta.persistence.Entity;
 @DiscriminatorValue("COMPANY")
 public class CompanyEntity extends ClientEntity {
 
-  @Column(name = "company_identifier", nullable = false, unique = true)
+  @Column(name = "company_identifier", unique = true)
   private String companyIdentifier;
 
   public String getCompanyIdentifier() {

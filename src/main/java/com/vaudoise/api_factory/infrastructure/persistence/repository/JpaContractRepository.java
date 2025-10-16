@@ -15,15 +15,18 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface JpaContractRepository extends JpaRepository<ContractEntity, UUID> {
-  Page<ContractEntity> findByClientIdAndEndDateIsNullOrEndDateAfterAndUpdatedAtAfter(
+  Page<ContractEntity> findByClientIdAndEndDateIsNullOrEndDateGreaterThanAndUpdatedAtAfter(
       UUID clientId, LocalDate currentDate, Instant updatedSince, Pageable pageable);
 
-  Page<ContractEntity> findByClientIdAndEndDateIsNullOrEndDateAfter(
+  Page<ContractEntity> findByClientIdAndEndDateIsNullOrEndDateGreaterThan(
       UUID clientId, LocalDate currentDate, Pageable pageable);
 
   Page<ContractEntity> findByClientId(UUID clientId, Pageable pageable);
 
-  List<ContractEntity> findAllActiveContractsForClient(UUID clientId);
+  @Query(
+      "SELECT c FROM ContractEntity c WHERE c.client.id = :clientId AND (c.endDate IS NULL OR c.endDate > :currentDate)")
+  List<ContractEntity> findAllActiveContractsForClient(
+      @Param("clientId") UUID clientId, @Param("currentDate") LocalDate currentDate);
 
   @Query(
       "SELECT SUM(c.costAmount) FROM ContractEntity c WHERE c.client.id = :clientId AND (c.endDate IS NULL OR c.endDate > :currentDate)")

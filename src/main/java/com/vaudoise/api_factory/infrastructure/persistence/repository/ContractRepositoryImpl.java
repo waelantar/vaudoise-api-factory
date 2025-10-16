@@ -2,7 +2,6 @@ package com.vaudoise.api_factory.infrastructure.persistence.repository;
 
 import com.vaudoise.api_factory.domain.model.Contract;
 import com.vaudoise.api_factory.domain.model.Money;
-import com.vaudoise.api_factory.domain.repository.ContractRepository;
 import com.vaudoise.api_factory.infrastructure.persistence.entity.ContractEntity;
 import com.vaudoise.api_factory.infrastructure.persistence.mapper.ContractMapper;
 import java.math.BigDecimal;
@@ -18,7 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class ContractRepositoryImpl implements ContractRepository {
+public class ContractRepositoryImpl
+    implements com.vaudoise.api_factory.domain.repository.ContractRepository {
 
   private final JpaContractRepository springRepo;
   private final ContractMapper mapper;
@@ -47,11 +47,11 @@ public class ContractRepositoryImpl implements ContractRepository {
 
     if (updatedSince != null) {
       entityPage =
-          springRepo.findByClientIdAndEndDateIsNullOrEndDateAfterAndUpdatedAtAfter(
+          springRepo.findByClientIdAndEndDateIsNullOrEndDateGreaterThanAndUpdatedAtAfter(
               clientId, LocalDate.now(), updatedSince, pageable);
     } else {
       entityPage =
-          springRepo.findByClientIdAndEndDateIsNullOrEndDateAfter(
+          springRepo.findByClientIdAndEndDateIsNullOrEndDateGreaterThan(
               clientId, LocalDate.now(), pageable);
     }
 
@@ -60,7 +60,8 @@ public class ContractRepositoryImpl implements ContractRepository {
 
   @Override
   public List<Contract> findAllActiveContractsForClient(UUID clientId) {
-    List<ContractEntity> entities = springRepo.findAllActiveContractsForClient(clientId);
+    List<ContractEntity> entities =
+        springRepo.findAllActiveContractsForClient(clientId, LocalDate.now());
 
     return entities.stream().map(mapper::toDomain).collect(Collectors.toList());
   }
@@ -74,6 +75,12 @@ public class ContractRepositoryImpl implements ContractRepository {
   @Override
   public Money getActiveContractsCostSum(UUID clientId) {
     BigDecimal sum = springRepo.findActiveContractsCostSumByClientId(clientId, LocalDate.now());
-    return new Money(sum == null ? BigDecimal.ZERO : sum, Currency.getInstance("CHF"));
+    if (sum == null) {
+      sum = BigDecimal.ZERO;
+    }
+    if (sum.compareTo(BigDecimal.ZERO) <= 0) {
+      return new Money(BigDecimal.ZERO, Currency.getInstance("CHF"));
+    }
+    return new Money(sum, Currency.getInstance("CHF"));
   }
 }

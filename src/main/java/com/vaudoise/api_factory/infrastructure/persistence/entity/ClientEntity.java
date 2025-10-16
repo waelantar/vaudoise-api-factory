@@ -13,7 +13,8 @@ import java.util.UUID;
 public abstract class ClientEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(columnDefinition = "uuid")
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private UUID id;
 
   @Column(nullable = false)
@@ -38,7 +39,6 @@ public abstract class ClientEntity {
   @Column(name = "updated_at", nullable = false)
   private Instant updatedAt;
 
-  // Getters and Setters
   public UUID getId() {
     return id;
   }

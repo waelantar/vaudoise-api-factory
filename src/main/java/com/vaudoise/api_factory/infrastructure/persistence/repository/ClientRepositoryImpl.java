@@ -49,7 +49,8 @@ public class ClientRepositoryImpl implements ClientRepository {
       throw new ClientNotFoundException("Client not found with id: " + id);
     }
 
-    List<ContractEntity> activeContracts = contractRepo.findAllActiveContractsForClient(id);
+    List<ContractEntity> activeContracts =
+        contractRepo.findAllActiveContractsForClient(id, LocalDate.now());
 
     activeContracts.forEach(
         contract -> {

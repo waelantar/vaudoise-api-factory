@@ -9,8 +9,7 @@ public class Person extends Client {
 
   private LocalDate birthDate;
 
-  // For JPA/framework use
-  protected Person() {
+  public Person() {
     super();
   }
 
@@ -20,7 +19,6 @@ public class Person extends Client {
     this.birthDate = birthDate;
   }
 
-  // Business logic
   public int getAge() {
     return Period.between(this.birthDate, LocalDate.now()).getYears();
   }
@@ -29,7 +27,6 @@ public class Person extends Client {
     return getAge() >= 18;
   }
 
-  // Validation
   private void validateBirthDate(LocalDate birthDate) {
     Objects.requireNonNull(birthDate, "Birth date cannot be null for Person");
     if (birthDate.isAfter(LocalDate.now())) {
@@ -54,10 +51,7 @@ public class Person extends Client {
     return String.format("Person: %s (Age: %d)", getName(), getAge());
   }
 
-  // Getters
   public LocalDate getBirthDate() {
     return birthDate;
   }
-
-  // Note: birthDate is immutable after creation (business rule)
 }

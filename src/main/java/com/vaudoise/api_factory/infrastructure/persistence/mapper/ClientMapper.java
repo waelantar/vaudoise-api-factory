@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class ClientMapper {
 
-  // --- Domain ->  ---
-
   public ClientEntity to(Client client) {
     if (client instanceof Person person) {
       return toPerson(person);
@@ -22,7 +20,9 @@ public class ClientMapper {
 
   private PersonEntity toPerson(Person person) {
     PersonEntity entity = new PersonEntity();
-    entity.setId(person.getId());
+    if (person.getId() != null) {
+      entity.setId(person.getId());
+    }
     entity.setName(person.getName());
     entity.setEmail(person.getEmail().value());
     entity.setPhone(person.getPhone().value());
@@ -32,7 +32,9 @@ public class ClientMapper {
 
   private CompanyEntity toCompany(Company company) {
     CompanyEntity entity = new CompanyEntity();
-    entity.setId(company.getId());
+    if (company.getId() != null) {
+      entity.setId(company.getId());
+    }
     entity.setName(company.getName());
     entity.setEmail(company.getEmail().value());
     entity.setPhone(company.getPhone().value());
@@ -40,15 +42,13 @@ public class ClientMapper {
     return entity;
   }
 
-  // ---  -> Domain ---
-
   public Client toDomain(ClientEntity entity) {
     if (entity instanceof PersonEntity personEntity) {
       return toPersonDomain(personEntity);
     } else if (entity instanceof CompanyEntity companyEntity) {
       return toCompanyDomain(companyEntity);
     }
-    throw new IllegalArgumentException("Unknown  entity type: " + entity.getClass());
+    throw new IllegalArgumentException("Unknown JPA entity type: " + entity.getClass());
   }
 
   private Person toPersonDomain(PersonEntity entity) {

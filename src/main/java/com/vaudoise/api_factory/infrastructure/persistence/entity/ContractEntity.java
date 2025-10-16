@@ -11,7 +11,8 @@ import java.util.UUID;
 public class ContractEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(columnDefinition = "uuid")
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private UUID id;
 
   @ManyToOne(fetch = FetchType.LAZY)
@@ -36,7 +37,6 @@ public class ContractEntity {
   @Column(name = "updated_at", nullable = false)
   private Instant updatedAt;
 
-  // Getters and Setters
   public UUID getId() {
     return id;
   }
