@@ -5,34 +5,32 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 /** Contract entity representing an insurance contract. */
 public class Contract {
 
-  private Long id;
+  private UUID id;
   private Client client;
   private LocalDate startDate;
-  private LocalDate endDate; // null means open-ended
+  private LocalDate endDate;
   private Money costAmount;
-  private Instant updateDate; // Auto-updated when cost changes
+  private Instant updateDate;
   private Instant createdAt;
 
-  // For JPA/framework use
-  protected Contract() {
+  public Contract() {
     this.createdAt = Instant.now();
     this.updateDate = Instant.now();
   }
 
-  // Constructor with default dates
   public Contract(Client client, Money costAmount) {
     this();
     this.client = Objects.requireNonNull(client, "Client cannot be null");
     this.costAmount = Objects.requireNonNull(costAmount, "Cost amount cannot be null");
-    this.startDate = LocalDate.now(); // Default to today
-    this.endDate = null; // Default to open-ended
+    this.startDate = LocalDate.now();
+    this.endDate = null;
   }
 
-  // Constructor with explicit dates
   public Contract(Client client, Money costAmount, LocalDate startDate, LocalDate endDate) {
     this();
     this.client = Objects.requireNonNull(client, "Client cannot be null");
@@ -42,7 +40,6 @@ public class Contract {
     this.endDate = endDate;
   }
 
-  // Business logic
   public boolean isActive() {
     LocalDate today = LocalDate.now();
     return endDate == null || endDate.isAfter(today);
@@ -72,12 +69,10 @@ public class Contract {
             startDate, endDate != null ? endDate : LocalDate.now());
   }
 
-  // Auto-update logic
   private void refreshUpdateDate() {
     this.updateDate = Instant.now();
   }
 
-  // Validation
   private void validateEndDate(LocalDate start, LocalDate end) {
     if (end != null && end.isBefore(start)) {
       throw new IllegalArgumentException(
@@ -85,12 +80,11 @@ public class Contract {
     }
   }
 
-  // Getters and setters
-  public Long getId() {
+  public UUID getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(UUID id) {
     this.id = id;
   }
 
@@ -124,11 +118,11 @@ public class Contract {
     return createdAt;
   }
 
-  protected void setCreatedAt(Instant createdAt) {
+  public void setCreatedAt(Instant createdAt) {
     this.createdAt = createdAt;
   }
 
-  protected void setUpdateDate(Instant updateDate) {
+  public void setUpdateDate(Instant updateDate) {
     this.updateDate = updateDate;
   }
 

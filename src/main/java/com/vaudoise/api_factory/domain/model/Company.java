@@ -7,8 +7,7 @@ public class Company extends Client {
 
   private CompanyIdentifier companyIdentifier;
 
-  // For JPA/framework use
-  protected Company() {
+  public Company() {
     super();
   }
 
@@ -28,10 +27,7 @@ public class Company extends Client {
     return String.format("Company: %s (ID: %s)", getName(), companyIdentifier.value());
   }
 
-  // Getters
   public CompanyIdentifier getCompanyIdentifier() {
     return companyIdentifier;
   }
-
-  // Note: companyIdentifier is immutable after creation (business rule)
 }
