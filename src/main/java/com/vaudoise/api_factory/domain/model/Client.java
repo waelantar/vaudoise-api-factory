@@ -4,11 +4,12 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 /** Abstract base class for all client types. Represents an aggregate root in DDD. */
 public abstract class Client {
 
-  private Long id;
+  private UUID id;
   private String name;
   private Email email;
   private PhoneNumber phone;
@@ -30,7 +31,6 @@ public abstract class Client {
     this.phone = Objects.requireNonNull(phone, "Phone cannot be null");
   }
 
-  // Business logic
   public void updateInfo(String name, Email email, PhoneNumber phone) {
     validateName(name);
     this.name = name;
@@ -59,7 +59,6 @@ public abstract class Client {
     return this.contracts.stream().filter(Contract::isActive).toList();
   }
 
-  // Validation
   private void validateName(String name) {
     if (name == null || name.trim().isEmpty()) {
       throw new IllegalArgumentException("Name cannot be empty");
@@ -69,17 +68,15 @@ public abstract class Client {
     }
   }
 
-  // Abstract methods
   public abstract ClientType getType();
 
   public abstract String getDisplayInfo();
 
-  // Getters and setters
-  public Long getId() {
+  public UUID getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(UUID id) {
     this.id = id;
   }
 

@@ -5,11 +5,12 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 /** Contract entity representing an insurance contract. */
 public class Contract {
 
-  private Long id;
+  private UUID id;
   private Client client;
   private LocalDate startDate;
   private LocalDate endDate; // null means open-ended
@@ -86,11 +87,11 @@ public class Contract {
   }
 
   // Getters and setters
-  public Long getId() {
+  public UUID getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(UUID id) {
     this.id = id;
   }
 
