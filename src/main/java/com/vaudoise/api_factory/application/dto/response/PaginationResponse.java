@@ -6,8 +6,8 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record PaginationResponse<T>(
     List<T> content,
-    int page,
-    int size,
+    int pageNumber,
+    int pageSize,
     long totalElements,
     int totalPages,
     boolean first,

@@ -17,10 +17,12 @@ public class Contract {
   private Money costAmount;
   private Instant updateDate;
   private Instant createdAt;
+  private String name;
 
   public Contract() {
     this.createdAt = Instant.now();
     this.updateDate = Instant.now();
+    this.name = "Contract";
   }
 
   public Contract(Client client, Money costAmount) {
@@ -124,6 +126,14 @@ public class Contract {
 
   public void setUpdateDate(Instant updateDate) {
     this.updateDate = updateDate;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
   }
 
   @Override

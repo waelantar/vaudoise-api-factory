@@ -10,22 +10,14 @@ import java.util.UUID;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record PersonResponse(
-    // Common fields
     UUID id,
     String name,
     String email,
     String phone,
     List<ClientResponse.ContractSummary> contracts,
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", timezone = "UTC") Instant createdAt,
-
-    // Person-specific fields
     @JsonFormat(pattern = "yyyy-MM-dd") LocalDate birthDate,
     int age,
-    boolean major)
-    implements ClientResponse {
-
-  @Override
-  public ClientType type() {
-    return ClientType.PERSON;
-  }
-}
+    boolean major,
+    ClientType type)
+    implements ClientResponse {}

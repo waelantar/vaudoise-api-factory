@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.vaudoise.api_factory.domain.model.ClientType;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
@@ -29,8 +28,6 @@ public sealed interface ClientResponse permits PersonResponse, CompanyResponse {
 
   @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", timezone = "UTC")
   Instant createdAt();
-
-  ClientType type();
 
   record ContractSummary(UUID id, String name, boolean active) {}
 }

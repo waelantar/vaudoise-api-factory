@@ -15,11 +15,6 @@ public record CompanyResponse(
     String phone,
     List<ClientResponse.ContractSummary> contracts,
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", timezone = "UTC") Instant createdAt,
-    String companyIdentifier)
-    implements ClientResponse {
-
-  @Override
-  public ClientType type() {
-    return ClientType.COMPANY;
-  }
-}
+    String companyIdentifier,
+    ClientType type)
+    implements ClientResponse {}

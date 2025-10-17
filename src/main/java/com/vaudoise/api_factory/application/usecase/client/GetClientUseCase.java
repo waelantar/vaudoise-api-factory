@@ -4,6 +4,8 @@ import com.vaudoise.api_factory.domain.exception.ClientNotFoundException;
 import com.vaudoise.api_factory.domain.model.Client;
 import com.vaudoise.api_factory.domain.repository.ClientRepository;
 import java.util.UUID;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,6 +15,10 @@ public class GetClientUseCase {
 
   public GetClientUseCase(ClientRepository clientRepository) {
     this.clientRepository = clientRepository;
+  }
+
+  public Page<Client> execute(Pageable pageable) {
+    return clientRepository.findAll(pageable);
   }
 
   public Client execute(UUID id) {
