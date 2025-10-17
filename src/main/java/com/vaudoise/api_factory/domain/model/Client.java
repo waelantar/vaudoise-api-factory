@@ -104,7 +104,7 @@ public abstract class Client {
     return updatedAt;
   }
 
-  protected void setCreatedAt(Instant createdAt) {
+  public void setCreatedAt(Instant createdAt) {
     this.createdAt = createdAt;
   }
 
