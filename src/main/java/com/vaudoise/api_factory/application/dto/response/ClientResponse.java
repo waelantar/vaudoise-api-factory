@@ -29,6 +29,5 @@ public sealed interface ClientResponse permits PersonResponse, CompanyResponse {
   @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", timezone = "UTC")
   Instant createdAt();
 
-
   record ContractSummary(UUID id, String name, boolean active) {}
 }

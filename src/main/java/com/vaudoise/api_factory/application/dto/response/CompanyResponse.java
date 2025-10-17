@@ -17,5 +17,4 @@ public record CompanyResponse(
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", timezone = "UTC") Instant createdAt,
     String companyIdentifier,
     ClientType type)
-    implements ClientResponse {
-}
+    implements ClientResponse {}

@@ -2,6 +2,7 @@ package com.vaudoise.api_factory.infrastructure.web.exception;
 
 import com.vaudoise.api_factory.application.dto.response.ErrorResponse;
 import com.vaudoise.api_factory.domain.exception.ClientNotFoundException;
+import com.vaudoise.api_factory.domain.exception.ContractNotFoundException;
 import com.vaudoise.api_factory.domain.exception.DuplicateEmailException;
 import com.vaudoise.api_factory.domain.exception.InvalidBusinessRuleException;
 import com.vaudoise.api_factory.infrastructure.web.ApiSchemas;
@@ -87,5 +88,22 @@ public class GlobalExceptionHandler {
             Instant.now(),
             violations);
     return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(ContractNotFoundException.class)
+  public ResponseEntity<ErrorResponse> handleContractNotFoundException(
+      ContractNotFoundException ex, WebRequest request) {
+
+    ErrorResponse errorResponse =
+        new ErrorResponse(
+            "https://httpstatuses.com/404",
+            "Not Found",
+            ex.getMessage(),
+            HttpStatus.NOT_FOUND.value(),
+            request.getDescription(false).replace("uri=", ""),
+            Instant.now(),
+            null);
+
+    return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
   }
 }

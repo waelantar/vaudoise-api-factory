@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
-@RequestMapping("api/v1/clients")
+@RequestMapping("/api/v1/clients")
 @Tag(name = "Clients", description = "Operations for managing clients (Person and Company)")
 public class ClientController {
 
@@ -79,7 +79,7 @@ public class ClientController {
 
     URI location =
         ServletUriComponentsBuilder.fromCurrentContextPath()
-            .path("/api/clients/persons/{id}")
+            .path("/api/v1/clients/persons/{id}")
             .buildAndExpand(createdPerson.getId())
             .toUri();
 
@@ -117,7 +117,7 @@ public class ClientController {
 
     URI location =
         ServletUriComponentsBuilder.fromCurrentContextPath()
-            .path("/api/clients/companies/{id}")
+            .path("/api/v1/clients/companies/{id}")
             .buildAndExpand(createdCompany.getId())
             .toUri();
 
@@ -265,8 +265,7 @@ public class ClientController {
         person.getBirthDate(),
         person.getAge(),
         person.isMajor(),
-        person.getType()
-        );
+        person.getType());
   }
 
   private CompanyResponse mapToCompanyResponse(Company company) {
@@ -286,7 +285,6 @@ public class ClientController {
         contracts,
         company.getCreatedAt(),
         company.getCompanyIdentifier().value(),
-        company.getType()
-        );
+        company.getType());
   }
 }

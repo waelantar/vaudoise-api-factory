@@ -31,7 +31,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(ClientController.class)
+@WebMvcTest(controllers = ClientController.class)
 @DisplayName("Client Controller Tests")
 class ClientControllerTest {
 
@@ -94,7 +94,7 @@ class ClientControllerTest {
 
     mockMvc
         .perform(
-            post("/api/clients/persons")
+            post("/api/v1/clients/persons")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createPersonRequest)))
         .andExpect(status().isCreated())
@@ -102,7 +102,8 @@ class ClientControllerTest {
             header()
                 .string(
                     "Location",
-                    org.hamcrest.Matchers.endsWith("/api/clients/persons/" + personId.toString())))
+                    org.hamcrest.Matchers.endsWith(
+                        "/api/v1/clients/persons/" + personId.toString())))
         .andExpect(jsonPath("$.id").value(personId.toString()))
         .andExpect(jsonPath("$.name").value("John Doe"))
         .andExpect(jsonPath("$.email").value("john.doe@example.com"))
@@ -118,7 +119,7 @@ class ClientControllerTest {
 
     mockMvc
         .perform(
-            post("/api/clients/persons")
+            post("/api/v1/clients/persons")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createPersonRequest)))
         .andExpect(status().isConflict())
@@ -133,7 +134,7 @@ class ClientControllerTest {
 
     mockMvc
         .perform(
-            post("/api/clients/persons")
+            post("/api/v1/clients/persons")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(invalidRequest)))
         .andExpect(status().isBadRequest());
@@ -146,7 +147,7 @@ class ClientControllerTest {
 
     mockMvc
         .perform(
-            post("/api/clients/companies")
+            post("/api/v1/clients/companies")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createCompanyRequest)))
         .andExpect(status().isCreated())
@@ -155,7 +156,7 @@ class ClientControllerTest {
                 .string(
                     "Location",
                     org.hamcrest.Matchers.endsWith(
-                        "/api/clients/companies/" + companyId.toString())))
+                        "/api/v1/clients/companies/" + companyId.toString())))
         .andExpect(jsonPath("$.id").value(companyId.toString()))
         .andExpect(jsonPath("$.name").value("Vaudoise Assurances"))
         .andExpect(jsonPath("$.companyIdentifier").value("CHE-123.123.123"))
@@ -168,7 +169,7 @@ class ClientControllerTest {
     given(getClientUseCase.execute(personId)).willReturn(person);
 
     mockMvc
-        .perform(get("/api/clients/{id}", personId))
+        .perform(get("/api/v1/clients/{id}", personId))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").value(personId.toString()))
         .andExpect(jsonPath("$.type").value("PERSON"))
@@ -182,7 +183,7 @@ class ClientControllerTest {
         .willThrow(new ClientNotFoundException("Client not found"));
 
     mockMvc
-        .perform(get("/api/clients/{id}", personId))
+        .perform(get("/api/v1/clients/{id}", personId))
         .andExpect(status().isNotFound())
         .andExpect(jsonPath("$.detail").value("Client not found"));
   }
@@ -195,7 +196,7 @@ class ClientControllerTest {
     given(getClientUseCase.execute(any(Pageable.class))).willReturn(clientPage);
 
     mockMvc
-        .perform(get("/api/clients"))
+        .perform(get("/api/v1/clients"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.content").isArray())
         .andExpect(jsonPath("$.content.length()").value(2))
@@ -223,7 +224,7 @@ class ClientControllerTest {
 
     mockMvc
         .perform(
-            put("/api/clients/{id}", personId)
+            put("/api/v1/clients/{id}", personId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateClientRequest)))
         .andExpect(status().isOk())
@@ -241,7 +242,7 @@ class ClientControllerTest {
 
     mockMvc
         .perform(
-            put("/api/clients/{id}", personId)
+            put("/api/v1/clients/{id}", personId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateClientRequest)))
         .andExpect(status().isNotFound());
@@ -253,7 +254,7 @@ class ClientControllerTest {
     willDoNothing().given(deleteClientUseCase).execute(personId);
 
     mockMvc
-        .perform(delete("/api/clients/{id}", personId))
+        .perform(delete("/api/v1/clients/{id}", personId))
         .andExpect(status().isNoContent())
         .andExpect(content().string(""));
 

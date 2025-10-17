@@ -20,5 +20,4 @@ public record PersonResponse(
     int age,
     boolean major,
     ClientType type)
-    implements ClientResponse {
-}
+    implements ClientResponse {}
