@@ -14,7 +14,7 @@ RUN chmod +x ./mvnw
 COPY src ./src
 
 # Run the build using the wrapper
-RUN ./mvnw clean package -DskipTests
+RUN ./mvnw spotless:apply clean package -DskipTests
 
 # Runtime stage
 FROM eclipse-temurin:25-jre-alpine

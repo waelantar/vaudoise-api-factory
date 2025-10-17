@@ -24,20 +24,20 @@ public class OpenApiConfig {
         .title("Vaudoise API Factory - Client & Contract Management")
         .description(
             """
-                            RESTful API for managing insurance clients and contracts.
+                                    RESTful API for managing insurance clients and contracts.
 
-                            ## Features
-                            - Client management (Person and Company)
-                            - Contract lifecycle management
-                            - Active contract filtering
-                            - Performance-optimized cost calculation
+                                    ## Features
+                                    - Client management (Person and Company)
+                                    - Contract lifecycle management
+                                    - Active contract filtering
+                                    - Performance-optimized cost calculation
 
-                            ## Standards
-                            - Follows Vaudoise API Guidelines
-                            - RFC 7807 Problem Details for error responses
-                            - ISO 8601 date format
-                            - E.164 phone number format
-                            """)
+                                    ## Standards
+                                    - Follows Vaudoise API Guidelines
+                                    - RFC 7807 Problem Details for error responses
+                                    - ISO 8601 date format
+                                    - E.164 phone number format
+                                    """)
         .version("1.0.0")
         .contact(
             new Contact()
@@ -50,8 +50,8 @@ public class OpenApiConfig {
   private List<Server> servers() {
     return List.of(
         new Server()
-            .url("http://localhost:8080/api/v1")
-            .description("Local Development Server with Base Path"));
+            .url("http://localhost:8080") // Remove /api/v1 from here
+            .description("Local Development Server"));
   }
 
   private List<Tag> tags() {
