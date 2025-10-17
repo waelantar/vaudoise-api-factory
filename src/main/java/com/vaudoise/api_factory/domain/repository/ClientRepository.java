@@ -13,6 +13,10 @@ public interface ClientRepository {
 
   void deleteById(UUID id);
 
+  Optional<Client> findByIdWithContracts(UUID id);
+
+  Page<Client> findAllWithContracts(Pageable pageable);
+
   Page<Client> findAll(Pageable pageable);
 
   Optional<Client> findByEmail(String email);

@@ -27,6 +27,7 @@ public class ClientMapper {
     entity.setEmail(person.getEmail().value());
     entity.setPhone(person.getPhone().value());
     entity.setBirthdate(person.getBirthDate());
+
     return entity;
   }
 
@@ -39,6 +40,7 @@ public class ClientMapper {
     entity.setEmail(company.getEmail().value());
     entity.setPhone(company.getPhone().value());
     entity.setCompanyIdentifier(company.getCompanyIdentifier().value());
+
     return entity;
   }
 
@@ -59,6 +61,7 @@ public class ClientMapper {
             new PhoneNumber(entity.getPhone()),
             entity.getBirthdate());
     person.setId(entity.getId());
+
     return person;
   }
 
@@ -70,6 +73,7 @@ public class ClientMapper {
             new PhoneNumber(entity.getPhone()),
             new CompanyIdentifier(entity.getCompanyIdentifier()));
     company.setId(entity.getId());
+
     return company;
   }
 }

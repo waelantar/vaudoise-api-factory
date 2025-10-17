@@ -3,8 +3,15 @@ package com.vaudoise.api_factory.infrastructure.web.controller;
 import com.vaudoise.api_factory.application.dto.request.CreateCompanyRequest;
 import com.vaudoise.api_factory.application.dto.request.CreatePersonRequest;
 import com.vaudoise.api_factory.application.dto.request.UpdateClientRequest;
-import com.vaudoise.api_factory.application.dto.response.*;
-import com.vaudoise.api_factory.application.usecase.client.*;
+import com.vaudoise.api_factory.application.dto.response.ClientResponse;
+import com.vaudoise.api_factory.application.dto.response.CompanyResponse;
+import com.vaudoise.api_factory.application.dto.response.ErrorResponse;
+import com.vaudoise.api_factory.application.dto.response.PaginationResponse;
+import com.vaudoise.api_factory.application.dto.response.PersonResponse;
+import com.vaudoise.api_factory.application.usecase.client.CreateClientUseCase;
+import com.vaudoise.api_factory.application.usecase.client.DeleteClientUseCase;
+import com.vaudoise.api_factory.application.usecase.client.GetClientUseCase;
+import com.vaudoise.api_factory.application.usecase.client.UpdateClientUseCase;
 import com.vaudoise.api_factory.domain.model.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -31,7 +38,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RequestMapping("/api/v1/clients")
 @Tag(name = "Clients", description = "Operations for managing clients (Person and Company)")
 public class ClientController {
-
   private final CreateClientUseCase createClientUseCase;
   private final GetClientUseCase getClientUseCase;
   private final UpdateClientUseCase updateClientUseCase;
@@ -73,16 +79,13 @@ public class ClientController {
             new Email(request.email()),
             new PhoneNumber(request.phone()),
             LocalDate.parse(request.birthDate()));
-
     Person createdPerson = (Person) createClientUseCase.execute(person);
     PersonResponse response = mapToPersonResponse(createdPerson);
-
     URI location =
         ServletUriComponentsBuilder.fromCurrentContextPath()
             .path("/api/v1/clients/persons/{id}")
             .buildAndExpand(createdPerson.getId())
             .toUri();
-
     return ResponseEntity.created(location).body(response);
   }
 
@@ -111,16 +114,13 @@ public class ClientController {
             new Email(request.email()),
             new PhoneNumber(request.phone()),
             new CompanyIdentifier(request.companyIdentifier()));
-
     Company createdCompany = (Company) createClientUseCase.execute(company);
     CompanyResponse response = mapToCompanyResponse(createdCompany);
-
     URI location =
         ServletUriComponentsBuilder.fromCurrentContextPath()
             .path("/api/v1/clients/companies/{id}")
             .buildAndExpand(createdCompany.getId())
             .toUri();
-
     return ResponseEntity.created(location).body(response);
   }
 
@@ -140,7 +140,7 @@ public class ClientController {
       })
   public ResponseEntity<ClientResponse> getClient(
       @Parameter(description = "Client ID") @PathVariable UUID id) {
-    Client client = getClientUseCase.execute(id);
+    Client client = getClientUseCase.executeWithContracts(id);
     ClientResponse response = mapToClientResponse(client);
     return ResponseEntity.ok(response);
   }
@@ -157,13 +157,10 @@ public class ClientController {
   public ResponseEntity<PaginationResponse<ClientResponse>> getAllClients(
       @Parameter(description = "Page number (0-based)") @RequestParam(defaultValue = "0") int page,
       @Parameter(description = "Page size") @RequestParam(defaultValue = "10") int size) {
-
     Pageable pageable = PageRequest.of(page, size);
-    Page<Client> clientPage = getClientUseCase.execute(pageable);
-
+    Page<Client> clientPage = getClientUseCase.executeWithContracts(pageable);
     Page<ClientResponse> clientResponsePage = clientPage.map(this::mapToClientResponse);
     PaginationResponse<ClientResponse> response = PaginationResponse.of(clientResponsePage);
-
     return ResponseEntity.ok(response);
   }
 
@@ -192,8 +189,8 @@ public class ClientController {
   public ResponseEntity<ClientResponse> updateClient(
       @Parameter(description = "Client ID") @PathVariable UUID id,
       @Valid @RequestBody UpdateClientRequest request) {
-
-    Client existingClient = getClientUseCase.execute(id);
+    // Fixed: Use executeWithContracts instead of execute
+    Client existingClient = getClientUseCase.executeWithContracts(id);
 
     Client updatedClient;
     if (existingClient.getType() == ClientType.PERSON) {
@@ -213,10 +210,8 @@ public class ClientController {
               new PhoneNumber(request.phone()),
               company.getCompanyIdentifier());
     }
-
     Client savedClient = updateClientUseCase.execute(id, updatedClient);
     ClientResponse response = mapToClientResponse(savedClient);
-
     return ResponseEntity.ok(response);
   }
 
@@ -254,7 +249,6 @@ public class ClientController {
                     new ClientResponse.ContractSummary(
                         contract.getId(), contract.getName(), contract.isActive()))
             .collect(Collectors.toList());
-
     return new PersonResponse(
         person.getId(),
         person.getName(),
@@ -276,7 +270,6 @@ public class ClientController {
                     new ClientResponse.ContractSummary(
                         contract.getId(), contract.getName(), contract.isActive()))
             .collect(Collectors.toList());
-
     return new CompanyResponse(
         company.getId(),
         company.getName(),
