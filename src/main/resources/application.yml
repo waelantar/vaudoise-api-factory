@@ -23,15 +23,14 @@ spring:
 
 server:
   port: 8080
-  servlet:
-    context-path: /api/v1
+  # Remove the context-path line
 
 logging:
   level:
     root: INFO
     com.vaudoise.api_factory: DEBUG
     org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE # Log query parameters
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
 management:
   endpoints:

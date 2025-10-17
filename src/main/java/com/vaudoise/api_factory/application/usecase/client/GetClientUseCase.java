@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class GetClientUseCase {
-
   private final ClientRepository clientRepository;
 
   public GetClientUseCase(ClientRepository clientRepository) {
@@ -25,5 +24,16 @@ public class GetClientUseCase {
     return clientRepository
         .findById(id)
         .orElseThrow(() -> new ClientNotFoundException("Client not found with id: " + id));
+  }
+
+  public Client executeWithContracts(UUID id) {
+    System.out.println("Fetching client with ID: {}" + id);
+    return clientRepository
+        .findByIdWithContracts(id)
+        .orElseThrow(() -> new ClientNotFoundException("Client not found with id: " + id));
+  }
+
+  public Page<Client> executeWithContracts(Pageable pageable) {
+    return clientRepository.findAllWithContracts(pageable);
   }
 }

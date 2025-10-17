@@ -20,6 +20,12 @@ public interface JpaClientRepository extends JpaRepository<ClientEntity, UUID> {
 
   boolean existsByEmail(String email);
 
+  @Query("SELECT c FROM ClientEntity c LEFT JOIN FETCH c.contracts WHERE c.id = :id")
+  Optional<ClientEntity> findByIdWithContracts(@Param("id") UUID id);
+
+  @Query("SELECT c FROM ClientEntity c LEFT JOIN FETCH c.contracts")
+  Page<ClientEntity> findAllWithContracts(Pageable pageable);
+
   @Query(
       "SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END FROM CompanyEntity c WHERE c.companyIdentifier = :identifier")
   boolean existsByCompanyIdentifier(@Param("identifier") String identifier);

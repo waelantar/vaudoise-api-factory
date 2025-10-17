@@ -7,8 +7,10 @@ import com.vaudoise.api_factory.application.dto.response.ErrorResponse;
 import com.vaudoise.api_factory.application.dto.response.MoneyResponse;
 import com.vaudoise.api_factory.application.dto.response.PaginationResponse;
 import com.vaudoise.api_factory.application.usecase.contract.*;
+import com.vaudoise.api_factory.domain.exception.ContractNotFoundException;
 import com.vaudoise.api_factory.domain.model.Contract;
 import com.vaudoise.api_factory.domain.model.Money;
+import com.vaudoise.api_factory.domain.repository.ContractRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -25,6 +27,8 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -38,16 +42,19 @@ public class ContractController {
   private final GetActiveContractsUseCase getActiveContractsUseCase;
   private final UpdateContractCostUseCase updateContractCostUseCase;
   private final CalculateTotalCostUseCase calculateTotalCostUseCase;
+  private final ContractRepository contractRepository;
 
   public ContractController(
       CreateContractUseCase createContractUseCase,
       GetActiveContractsUseCase getActiveContractsUseCase,
       UpdateContractCostUseCase updateContractCostUseCase,
-      CalculateTotalCostUseCase calculateTotalCostUseCase) {
+      CalculateTotalCostUseCase calculateTotalCostUseCase,
+      ContractRepository contractRepository) {
     this.createContractUseCase = createContractUseCase;
     this.getActiveContractsUseCase = getActiveContractsUseCase;
     this.updateContractCostUseCase = updateContractCostUseCase;
     this.calculateTotalCostUseCase = calculateTotalCostUseCase;
+    this.contractRepository = contractRepository;
   }
 
   @PostMapping
@@ -139,11 +146,27 @@ public class ContractController {
       @Parameter(description = "Contract ID") @PathVariable UUID id,
       @Valid @RequestBody UpdateContractCostRequest request) {
 
+    Contract contractBefore =
+        contractRepository
+            .findById(id)
+            .orElseThrow(() -> new ContractNotFoundException("Contract not found with id: " + id));
+    Instant updateDateBefore = contractBefore.getUpdateDate();
+
     Money newCost = Money.chf(new BigDecimal(request.costAmount()));
     Contract contract = updateContractCostUseCase.execute(id, newCost);
+
+    Contract contractAfter = contractRepository.findById(id).get();
+    Instant updateDateAfter = contractAfter.getUpdateDate();
+
     ContractResponse response = mapToContractResponse(contract);
 
-    return ResponseEntity.ok(response);
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("X-Update-Date-Before", updateDateBefore.toString());
+    headers.add("X-Update-Date-After", updateDateAfter.toString());
+    headers.add(
+        "X-Update-Date-Changed", updateDateAfter.isAfter(updateDateBefore) ? "true" : "false");
+
+    return new ResponseEntity<>(response, headers, HttpStatus.OK);
   }
 
   @GetMapping("/active/total-cost")

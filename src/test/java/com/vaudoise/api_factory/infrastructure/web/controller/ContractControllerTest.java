@@ -15,10 +15,13 @@ import com.vaudoise.api_factory.domain.model.Client;
 import com.vaudoise.api_factory.domain.model.Contract;
 import com.vaudoise.api_factory.domain.model.Money;
 import com.vaudoise.api_factory.domain.model.Person;
+import com.vaudoise.api_factory.domain.repository.ContractRepository;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -48,6 +51,8 @@ class ContractControllerTest {
   @MockitoBean private UpdateContractCostUseCase updateContractCostUseCase;
 
   @MockitoBean private CalculateTotalCostUseCase calculateTotalCostUseCase;
+
+  @MockitoBean private ContractRepository contractRepository;
 
   private UUID contractId;
   private UUID clientId;
@@ -182,14 +187,22 @@ class ContractControllerTest {
   @Test
   @DisplayName("Update Contract Cost - Should return 200 OK when contract exists")
   void updateContractCost_ShouldReturn200_WhenContractExists() throws Exception {
+    // Create a contract with an earlier update date
+    Instant earlierUpdateDate = Instant.now().minus(1, ChronoUnit.HOURS);
+    contract.setUpdateDate(earlierUpdateDate);
+
     Money newCost = Money.chf(new BigDecimal("1500.00"));
     Contract updatedContract =
         new Contract(client, newCost, contract.getStartDate(), contract.getEndDate().orElse(null));
     updatedContract.setId(contractId);
     updatedContract.setCreatedAt(contract.getCreatedAt());
+    updatedContract.setUpdateDate(Instant.now()); // New update date
 
+    // Mock the repository calls
+    given(contractRepository.findById(contractId)).willReturn(Optional.ofNullable(contract));
     given(updateContractCostUseCase.execute(eq(contractId), any(Money.class)))
         .willReturn(updatedContract);
+    given(contractRepository.findById(contractId)).willReturn(Optional.of(updatedContract));
 
     mockMvc
         .perform(
@@ -197,6 +210,9 @@ class ContractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateContractCostRequest)))
         .andExpect(status().isOk())
+        .andExpect(header().exists("X-Update-Date-Before"))
+        .andExpect(header().exists("X-Update-Date-After"))
+        .andExpect(header().exists("X-Update-Date-Changed"))
         .andExpect(jsonPath("$.id").value(contractId.toString()))
         .andExpect(jsonPath("$.costAmount").value(1500.00))
         .andExpect(jsonPath("$.costCurrency").value("CHF"));
@@ -205,7 +221,7 @@ class ContractControllerTest {
   @Test
   @DisplayName("Update Contract Cost - Should return 404 Not Found when contract does not exist")
   void updateContractCost_ShouldReturn404_WhenContractDoesNotExist() throws Exception {
-    given(updateContractCostUseCase.execute(eq(contractId), any(Money.class)))
+    given(contractRepository.findById(contractId))
         .willThrow(new ContractNotFoundException("Contract not found"));
 
     mockMvc

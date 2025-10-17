@@ -52,14 +52,6 @@ public class Contract {
     this.updateDate = Instant.now();
   }
 
-  public void updateCost(Money newCost) {
-    Objects.requireNonNull(newCost, "Cost amount cannot be null");
-    if (!this.costAmount.equals(newCost)) {
-      this.costAmount = newCost;
-      refreshUpdateDate();
-    }
-  }
-
   public Period calculateDuration() {
     LocalDate end = endDate != null ? endDate : LocalDate.now();
     return Period.between(startDate, end);
@@ -69,6 +61,14 @@ public class Contract {
     return (int)
         java.time.temporal.ChronoUnit.DAYS.between(
             startDate, endDate != null ? endDate : LocalDate.now());
+  }
+
+  public void updateCost(Money newCost) {
+    Objects.requireNonNull(newCost, "Cost amount cannot be null");
+    if (!this.costAmount.equals(newCost)) {
+      this.costAmount = newCost;
+      refreshUpdateDate();
+    }
   }
 
   private void refreshUpdateDate() {
@@ -154,5 +154,9 @@ public class Contract {
     return String.format(
         "Contract{id=%d, client=%s, cost=%s, active=%b}",
         id, client != null ? client.getName() : "null", costAmount, isActive());
+  }
+
+  public void setClient(Client client) {
+    this.client = client;
   }
 }

@@ -6,9 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-/** Abstract base class for all client types. Represents an aggregate root in DDD. */
 public abstract class Client {
-
   private UUID id;
   private String name;
   private Email email;
@@ -43,6 +41,7 @@ public abstract class Client {
     Objects.requireNonNull(contract, "Contract cannot be null");
     if (!this.contracts.contains(contract)) {
       this.contracts.add(contract);
+      contract.setClient(this);
     }
   }
 

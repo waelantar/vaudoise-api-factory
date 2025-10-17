@@ -2,7 +2,9 @@ package com.vaudoise.api_factory.infrastructure.web.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.BDDMockito.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -166,7 +168,7 @@ class ClientControllerTest {
   @Test
   @DisplayName("Get Client by ID - Should return 200 OK for a Person")
   void getClient_ShouldReturn200_WhenPersonExists() throws Exception {
-    given(getClientUseCase.execute(personId)).willReturn(person);
+    given(getClientUseCase.executeWithContracts(personId)).willReturn(person);
 
     mockMvc
         .perform(get("/api/v1/clients/{id}", personId))
@@ -179,7 +181,7 @@ class ClientControllerTest {
   @Test
   @DisplayName("Get Client by ID - Should return 404 Not Found when client does not exist")
   void getClient_ShouldReturn404_WhenClientDoesNotExist() throws Exception {
-    given(getClientUseCase.execute(personId))
+    given(getClientUseCase.executeWithContracts(personId))
         .willThrow(new ClientNotFoundException("Client not found"));
 
     mockMvc
@@ -193,7 +195,7 @@ class ClientControllerTest {
   void getAllClients_ShouldReturnPaginatedList() throws Exception {
     List<Client> clients = List.of(person, company);
     Page<Client> clientPage = new PageImpl<>(clients, PageRequest.of(0, 10), 2);
-    given(getClientUseCase.execute(any(Pageable.class))).willReturn(clientPage);
+    given(getClientUseCase.executeWithContracts(any(Pageable.class))).willReturn(clientPage);
 
     mockMvc
         .perform(get("/api/v1/clients"))
@@ -219,7 +221,7 @@ class ClientControllerTest {
     updatedPerson.setId(personId);
     updatedPerson.setCreatedAt(person.getCreatedAt());
 
-    given(getClientUseCase.execute(personId)).willReturn(person);
+    given(getClientUseCase.executeWithContracts(personId)).willReturn(person);
     given(updateClientUseCase.execute(eq(personId), any(Person.class))).willReturn(updatedPerson);
 
     mockMvc
@@ -237,7 +239,7 @@ class ClientControllerTest {
   @DisplayName(
       "Update Client - Should return 404 Not Found when trying to update a non-existent client")
   void updateClient_ShouldReturn404_WhenClientDoesNotExist() throws Exception {
-    given(getClientUseCase.execute(personId))
+    given(getClientUseCase.executeWithContracts(personId))
         .willThrow(new ClientNotFoundException("Client not found"));
 
     mockMvc
