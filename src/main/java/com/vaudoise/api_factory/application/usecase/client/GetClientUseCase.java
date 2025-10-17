@@ -1,0 +1,23 @@
+package com.vaudoise.api_factory.application.usecase.client;
+
+import com.vaudoise.api_factory.domain.exception.ClientNotFoundException;
+import com.vaudoise.api_factory.domain.model.Client;
+import com.vaudoise.api_factory.domain.repository.ClientRepository;
+import java.util.UUID;
+import org.springframework.stereotype.Service;
+
+@Service
+public class GetClientUseCase {
+
+  private final ClientRepository clientRepository;
+
+  public GetClientUseCase(ClientRepository clientRepository) {
+    this.clientRepository = clientRepository;
+  }
+
+  public Client execute(UUID id) {
+    return clientRepository
+        .findById(id)
+        .orElseThrow(() -> new ClientNotFoundException("Client not found with id: " + id));
+  }
+}

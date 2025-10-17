@@ -5,21 +5,18 @@ import java.math.RoundingMode;
 import java.util.Currency;
 import java.util.Objects;
 
-/** Value Object representing monetary value. Immutable and self-validating. */
 public record Money(BigDecimal amount, Currency currency) {
 
   private static final Currency CHF = Currency.getInstance("CHF");
   private static final int SCALE = 2;
   private static final BigDecimal MAX_AMOUNT = new BigDecimal("999999999.99");
 
-  // Compact constructor for validation and normalization
   public Money {
     validate(amount);
     amount = amount.setScale(SCALE, RoundingMode.HALF_UP);
     Objects.requireNonNull(currency, "Currency cannot be null");
   }
 
-  // Static factory methods for convenience
   public static Money chf(BigDecimal amount) {
     return new Money(amount, CHF);
   }
@@ -28,7 +25,6 @@ public record Money(BigDecimal amount, Currency currency) {
     return new Money(BigDecimal.valueOf(amount), CHF);
   }
 
-  // Private validation method
   private void validate(BigDecimal amount) {
     if (amount == null) {
       throw new IllegalArgumentException("Amount cannot be null");
@@ -41,7 +37,6 @@ public record Money(BigDecimal amount, Currency currency) {
     }
   }
 
-  // Business operations
   public Money add(Money other) {
     validateCurrency(other);
     return new Money(this.amount.add(other.amount), this.currency);
